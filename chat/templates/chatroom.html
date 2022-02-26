@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Public Chat</title>
+  </head>
+  <body>
+  
+    <div class="container">
+      <div class="row d-flex justify-content-center">
+        <div class="col-6">
+          <form>
+              <div class="form-group">
+                <label for="example" class="h4 pt-5">Chatroom</label>
+                <textarea class="form-control" id="chat-text" rows="10" disabled></textarea><br>
+              </div>
+              <div class="form-group">
+                <input type="text" id="input" class="form-control"><br>  
+              </div>
+              <input class="btn btn-secondary btn-lg btn-block" id="submit" type="button" value="Send">
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+
+    {{ room_name | json_script:"room-name" }}
+    {{request.user.username | json_script:"user_username"}}
+
+    <script>
+
+      document.querySelector('#submit').onclick = function (e){
+          const messageInputDOm = document.querySelector('#input');
+          const message = messageInputDOm.value;
+          chatSocket.send(JSON.stringify({
+            'message':message,
+            'username':user_username,
+          }));
+          messageInputDOm.value = '';
+
+      };
+
+
+
+
+        const user_username = JSON.parse(document.getElementById('user_username').textContent);
+         const roomName = JSON.parse(document.getElementById('room-name').textContent);
+         
+         const chatSocket = new WebSocket(
+              'ws://' +
+              window.location.host +
+              '/ws/chat/'+
+              roomName +
+              '/'
+         );
+
+         chatSocket.onmessage = function(e){
+              const data = JSON.parse(e.data);
+              console.log(data);
+              
+              document.querySelector('#chat-text').innerHTML +=(data.username +': '+ data.message + '\n');
+         }
+    </script>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>
