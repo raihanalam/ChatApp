@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title_block%} Signup {% endblock%}
+{% block css_block %}
+<style>
+     .sign-page{
+          height: auto screen;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+     }
+     .sign-in{
+          
+          padding: 30px;
+          margin-top: 20px;
+          width: 400px;
+
+          box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+     }
+     .sign-in button{
+          width: 100%;
+     }
+</style>
+
+{% endblock %}
+
+{% block body_block%}
+
+<div class="sign-page">
+     <center>
+          <div class="sign-in">
+               <h3 style="font-family: 'Comforter', cursive; font-size: 60px;">ChatBox</h3>
+               <form method="POST" class="my-5">
+                    {{form | crispy }}
+                    {% csrf_token%}
+                    <button type="submit" class="btn btn-sm btn-success"> Signin </button>
+               </form>
+               <p>Havn't an account? <a href="{% url 'account:sign_up'%}">Signup</a></p>
+               <p>or,<br>Signin with a test account <span style="text-align: left; color: rgb(124, 117, 117);"><br>username: test_user <br>password: 123456@test</span></p>
+               
+          </div>
+     
+     </center>
+</div>
+
+{% endblock %}

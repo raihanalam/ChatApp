@@ -15,8 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.conf import settings
+from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
+from chat.views import Home, Room, Chat
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('chat/',include('chat.urls'))
+    path('account/',include('account.urls')),
+    path('', Home.as_view() , name='home'),
+    path('chat/',include('chat.urls')),
 ]
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
