@@ -5,11 +5,20 @@
 {% block title %} ChatBox | Home  {% endblock %}
 
 {% block body_block %}
-{% include 'nav.html' %}
-    <div class="container">
-        <h3 class="heading">What chat room would you like to enter?</h3>
-        <input class="textInput" id="room-name-input" type="text" size="100"><br>
-        <input class="button" id="room-name-submit" type="button" value="Enter">
+
+    <div class="app-box container">
+        <div class="">
+            <h3 class="heading">What chat box would you like to enter?</h3>
+            {% for room in user_rooms %}
+                {% if forloop.counter <= 5%}
+                    <a href="{% url 'chat:room' room_name=room.name %}" class="btn btn-sm btn-light">{{room.name}}</a>
+                {% endif %}
+            {% endfor %}
+            <div id="alert-msg"></div>
+            <input class="textInput" id="room-name-input" type="text" size="100"><br>
+            <input class="button" id="room-name-submit" type="button" value="Enter">
+        </div>
+
     </div>
 
     <script>
@@ -22,7 +31,14 @@
 
         document.querySelector('#room-name-submit').onclick = function(e) {
             var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/chat/' + roomName + '/';
+            if(roomName === ''){
+                document.getElementById('alert-msg').innerHTML = "<p>Please enter a group name!</p>";
+                
+            }else{
+                
+                window.location.pathname = '/chat/box/' + roomName + '/';
+            }
+            
         };
     </script>
 {% endblock %}

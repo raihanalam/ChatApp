@@ -4,8 +4,36 @@
 body {
 	background-color: #f5f5f5;
 }
+.icon-bar {
+	width: 100%;
+	background-color: #555;
+	overflow: auto;
+	height: 90px;
+}
+   
+.icon-bar a {
+	float: left;
+	width: 20%;
+	text-align: center;
+	padding: 10px 0;
+	transition: all 0.3s ease;
+	color: white;
+	font-size: 30px;
+	text-decoration: none;
+}
+   
+.icon-bar a:hover {
+	background-color: #000;
+}
+.icon-bar a p{
+	font-size: 1rem;
+}
+   
+.active {
+	background-color: rgb(114, 42, 182);
+}
 
-.container {
+.app-box {
 	width: 100vw;
 	margin: 50px auto;
 	padding: 25px 10px;
@@ -37,8 +65,8 @@ body {
 
 .button {
 	background-color: #ffffff;
-	color: #9a4ef1;
-	border: 0.16em solid #9a4ef1;
+	color: rgb(114, 42, 182);
+	border: 0.16em solid rgb(114, 42, 182);
 	border-radius: 2em;
 	padding: 10px 25px;
 	text-align: center;
@@ -51,7 +79,7 @@ body {
 }
 
 .button:hover {
-	background-color: #9a4ef1;
+	background-color: rgb(114, 42, 182);
 	color: #ffffff;
 	transition: 0.3s;
 }
@@ -76,25 +104,32 @@ body {
 .receiver{
 	background-color: #62bd56;
 }
-.leaveButton {
-	background-color: #f5f5f5;
-	border-color: #aa0404;
-	color: #aa0404;
-	border: 0.16em solid #aa0404;
-	border-radius: 2em;
-	padding: 10px 25px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 16px;
-	cursor: pointer;
-	transition: 0.3s;
-	width: 160px;
-	margin: 20px;
-}
 
-.leaveButton:hover {
-	background-color: #aa0404;
-	color: #ffffff;
-	transition: 0.3s;
+.room_list h6{
+	height: 40px;
+	width: 80%;
+	background-color: rgb(156, 109, 173);padding: 10px;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	color: white;
+	margin-bottom: 15px;
+}
+.room_list h6:hover{
+
+	background-color: rgb(114, 42, 182);padding: 10px;
+	box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+.room_list a{
+	text-decoration: none;
+}
+.join-button{
+	background-color: #39976b;
+	padding: 5px;
+	color: white;
+	border: none;
+	border-radius:3px ;
+}
+.join-button:hover{
+	background-color: #000;
+	color: white;
+	padding: 5px;
 }

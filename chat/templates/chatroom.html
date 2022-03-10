@@ -1,97 +1,120 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %} ChatBox|Room{% endblock %}
+{% block title %} ChatBox|{{current_room.name}}{% endblock %}
 
 
 {% block body_block %}
-<a class="leaveButton" href="{% url 'chat:home' %}">Leave Room</a>
-<a class="leaveButton" href="{% url 'account:sign_out' %}">Signout</a>
-<div class="container">
-  <div id="chat-log">
+<div class="container app-box">
+  <div class="settings d-flex justify-content-between">
+    <a class="btn btn-md btn-warning" href="{% url 'chat:home' %}">Exit</a>
+    <div class="btn-group dropleft">
+      <button type="button" class="btn btn-secondary dropdown-toggle btn-md" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">
+        Info
+      </button>
+      <div class="dropdown-menu ">
+        <p class="dropdown-item">Name: {{current_room.name}}</p>
+
+        {% if current_room.mode == True %}
+        <p class="dropdown-item">Mode: Private</p>
+        <p class="dropdown-item">Joining Key: {{current_room.key}}</p>
+        {% else %}
+        <p class="dropdown-item">Mode: Public</p>
+        {% endif %}
+        <p class="dropdown-item">Total Member: {{current_room.users.count}}</p>
+        <a href="{% url 'chat:leave_box' room_name=current_room.name %}" class="dropdown-item">Leave</a>
+      </div>
+    </div>
+
+  </div>
+  <div id="chat-log" style="overflow-y: scroll; height:50vh;margin: 10px;">
     {% for chat in chats.all %}
-      {% if chat.user.id == request.user.id %}
-        <p class="message sender">{{chat.content}}</p>
-      {% else %}
-        <p class="message receiver">{{chat.content}}</p>
-      {% endif %}
+    {% if chat.user.id == request.user.id %}
+    <p class="message sender">{{chat.content}}</p>
+
+    {% else %}
+    <p class="message receiver"><span style="color: black;">{{chat.user}}:</span>  {{chat.content}}</p>
+    {% endif %}
     {% endfor %}
   </div>
-</div>
-
-<div class="container">
   <input class="textInput" id="chat-message-input" type="text" size="100"><br>
   <input class="button" id="chat-message-submit" type="button" value="Send">
-  {{ room_name|json_script:"room-name" }}
 </div>
-
 
 {{ room_name | json_script:"room-name" }}
 {{request.user.username | json_script:"user_username"}}
 {{request.user.id | json_script:"user_id"}}
 
+
 <script>
+  const user_username = JSON.parse(document.getElementById('user_username').textContent);
+  const roomName = JSON.parse(document.getElementById('room-name').textContent);
+  const chatLog = document.querySelector('#chat-log')
 
-    const user_username = JSON.parse(document.getElementById('user_username').textContent);
-    const roomName = JSON.parse(document.getElementById('room-name').textContent);
-    const chatLog = document.querySelector('#chat-log')
+
+  if (chatLog.childNodes.length <= 1) {
+
+    const emptyText = document.createElement('h3')
+    emptyText.id = 'emptyText'
+    emptyText.innerText = 'No message'
+    emptyText.className = 'emptyText'
+    chatLog.appendChild(emptyText)
+  }
+
+  const chatSocket = new WebSocket(
+    'ws://' +
+    window.location.host +
+    '/ws/chat/box/' +
+    roomName +
+    '/'
+  );
+
+  chatSocket.onmessage = function (e) {
+    const data = JSON.parse(e.data);
+    const messageElement = document.createElement('p')
+
+    const userId = data['user_id']
+    const loggedInUserId = JSON.parse(document.getElementById('user_id').textContent)
 
 
-    if (chatLog.childNodes.length <= 1) {
-
-      const emptyText = document.createElement('h3')
-      emptyText.id = 'emptyText'
-      emptyText.innerText = 'No message'
-      emptyText.className = 'emptyText'
-      chatLog.appendChild(emptyText)
-    }
-
-    const chatSocket = new WebSocket(
-      'ws://' +
-      window.location.host +
-      '/ws/chat/' +
-      roomName +
-      '/'
-    );
-
-    chatSocket.onmessage = function (e) {
-      const data = JSON.parse(e.data);
-      const messageElement = document.createElement('p')
-
-      const userId = data['user_id']
-      const loggedInUserId = JSON.parse(document.getElementById('user_id').textContent)
+    if (userId === loggedInUserId) {
       messageElement.innerText = data.message
-
-      if(userId === loggedInUserId){
-        messageElement.classList.add('message','sender')
-      } else {
-        messageElement.classList.add('message','receiver')
-      }
-
-      chatLog.appendChild(messageElement)
-
-      if (document.querySelector('#emptyText')) {
-        document.querySelector('#emptyText').remove()
-      }
+      messageElement.classList.add('message', 'sender')
+    } else {
+      messageElement.innerHTML = `<span style="color:black;">${data.username}:</span> ${data.message}`
+      messageElement.classList.add('message', 'receiver')
     }
-    chatSocket.onclose = function (e) {
-      console.error('Chat socket closed unexpectedly');
-    };
 
-    document.querySelector('#chat-message-input').focus();
-    document.querySelector('#chat-message-input').onkeyup = function (e) {
-      if (e.keyCode === 13) {  // enter, return
-        document.querySelector('#submit').click();
-      }
-    };
+    chatLog.appendChild(messageElement)
 
-    document.querySelector('#chat-message-submit').onclick = function (e) {
-      const messageInputDom = document.querySelector('#chat-message-input');
-      const message = messageInputDom.value;
-      chatSocket.send(JSON.stringify({
-        'message': message,
-        'username': user_username,
-      }));
-      messageInputDom.value = '';
-    };
-  </script>
+    if (document.querySelector('#emptyText')) {
+      document.querySelector('#emptyText').remove()
+    }
+  }
+  chatSocket.onclose = function (e) {
+    console.error('Chat socket closed unexpectedly');
+  };
+
+  document.querySelector('#chat-message-input').focus();
+  document.querySelector('#chat-message-input').onkeyup = function (e) {
+    if (e.keyCode === 13) {  // enter, return
+      document.querySelector('#chat-message-submit').click();
+    }
+  };
+
+  document.querySelector('#chat-message-submit').onclick = function (e) {
+    const messageInputDom = document.querySelector('#chat-message-input');
+    const message = messageInputDom.value;
+    chatSocket.send(JSON.stringify({
+      'message': message,
+      'username': user_username,
+    }));
+    messageInputDom.value = '';
+  };
+    const theElement = document.getElementById('chat-log');
+    const scrollToBottom = (node) => {
+	  node.scrollTop = node.scrollHeight;
+    }
+    scrollToBottom(theElement);
+</script>
 {% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} ChatBox| Global {% endblock %}
+
+
+{% block body_block %}
+<div class="app-box container">
+     <div class="row">
+          <div class="col-md-6">
+               <center>
+               <h3>Private Chat</h3>
+               <form style="width: 80%;" method="POST">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" name="key" placeholder="Joining key..."><br>
+                    <button type="submit" class="btn join-button">+ Join Box</button>
+               </form>
+               </center>
+          </div>
+          <div class="col-md-6">
+               <center>
+               <h3>Public Chat</h3>
+               <div class="room_list">
+                    {% for room in pu_rooms %}
+                    <h6 class="d-flex align-items-center justify-content-left position-relative"><a href="{% url 'chat:join_box' room_name=room.name %}" class="join-button">+ Join Box</a> &nbsp; {{room.name}}<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger p-1">({{room.users.count}} people)</span></h6>
+                    {% endfor %}
+               </div>
+               </center>
+          </div>
+     </div>
+</div>
+
+{% endblock %}

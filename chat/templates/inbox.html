@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} ChatBox| Inbox {% endblock %}
+
+
+{% block body_block %}
+<div class="container app-box">
+     <div class="row">
+          <div class="col-md-6">
+               <h3>Create New Box</h3>
+               <center>
+               <form style="width: 80%;" method="POST">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" name="name" placeholder="Box name..."><br>
+                    <input class="form-check-input" type="radio"id="pub" name="mode" value="False" checked>
+                    <label class="form-check-label" for="pub">Public</label>
+                    <input class="form-check-input" type="radio" id="pri" name="mode" value="True">
+                    <label class="form-check-label" for="pri">Private</label><br><br>
+                    <button type="submit" class="btn btn-sm btn-success">+ Create Box</button>
+               </form>
+               </center>
+          </div>
+          <div class="col-md-6">
+               <center>
+               <h3>Own Connected Box</h3>
+               
+               <div class="room_list">
+                    <h5 class="text-left">Private</h5>
+                    {% for room in my_rooms %}
+                    
+                         {% if room.mode == True %}
+                              <a href="{% url 'chat:room' room_name=room.name %}"><h6 style="text-align: left;" class="position-relative">{{room.name}}<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger p-1">{{room.users.count}} people</span></h6></a>
+                         {% endif %}
+                    {% endfor %}
+
+                    <h5 class="text-left">Public</h5>
+                    {% for room in my_rooms %}
+                    
+                         {% if room.mode == False %}
+                              <a href="{% url 'chat:room' room_name=room.name %}"><h6 style="text-align: left;" class="position-relative">{{room.name}}<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger p-1">{{room.users.count}} people</span></h6></a>
+                         {% endif %}
+                    {% endfor %}
+
+               </div>
+               </center>
+          </div>
+          
+     </div>
+</div>
+
+{% endblock %}

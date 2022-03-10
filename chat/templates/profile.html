@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} ChatBox | Profile {% endblock %}
+
+
+{%block body_block%}
+<div class="container app-box">
+     <div class="row">
+          <h3>{{user.first_name}}'s Profile</h3>
+          <div class="col-md-6">
+               {% if user.user_profile %}
+                    <img src='/media/{{user.user_profile.profile_pic}}' class="rounded-circle" height="100px" width="100px"> 
+                    <br>
+                    <a href="{% url 'account:change_pro_pic'%}" class="btn btn-info btn-sm">Change Picture</a>
+               {% else %}
+                    <img src='/media/profile_pics/avatar.jpg' class="rounded-circle" height="100px" width="100px">
+                    <br>
+                    <a href="{% url 'account:add_pro_pic' %}" class="btn btn-info btn-sm">Add Picture</a>
+               {% endif %}
+               
+               <br>
+               <br>
+          <div class="details">
+               <p>Username: {{user.username}}</p>
+               <p>Name: {{user.first_name}} {{user.last_name}}</p>
+               <p>Email: {{user.email}}</p>
+               
+               <a href="{% url 'account:change_password'%}" class="btn btn-warning btn-sm ">Change Password</a><br>
+          
+
+          </div>
+          
+               </div>
+               <div class="col-md-6">
+                    <center>
+                    <form method="POST">
+                         {{form | crispy}}
+                         {% csrf_token %}
+                         <br>
+                         <button type="submit" class="btn btn-danger btn-sm">Change Info</button>
+                    </form>
+                    </center>
+               </div>
+
+     </div>
+</div>
+
+{%endblock%}
