@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=#%5ij9uh*))(fv*c@6$&mrxf93j9_0z!o7_i=69d9jq%x2!8x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['chatboox.herokuapp.com','127,0.0.1']
+ALLOWED_HOSTS = ['chatboox.herokuapp.com','127.0.0.1']
 
 
 # Application definition
@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
 
     'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -95,6 +96,16 @@ CHANNEL_LAYERS = {
     }
 }
 '''
+'''
+CACHES ={
+    "default": {
+        "BACKEND": "channels_redis.cache.RedisCache",
+        "LOCATION": [os.environ.get('REDIS_URL','redis://localhost:6379')],
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient" 
+        },
+    },
+}'''
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
