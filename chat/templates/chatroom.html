@@ -51,12 +51,15 @@
   const roomName = JSON.parse(document.getElementById('room-name').textContent);
   const chatLog = document.querySelector('#chat-log')
 
+
+  //Auto srcolling down in a div.
   const theElement = document.getElementById('chat-log');
   const scrollToBottom = (node) => {
 	  node.scrollTop = node.scrollHeight;
   }
+  scrollToBottom(theElement);
 
-
+  //Empty String will show when there is no message
   if (chatLog.childNodes.length <= 1) {
 
     const emptyText = document.createElement('h3')
@@ -119,7 +122,6 @@
     messageInputDom.value = '';
     
   };
-  scrollToBottom(theElement);
 
 </script>
 {% endblock %}
