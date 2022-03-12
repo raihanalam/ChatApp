@@ -51,6 +51,11 @@
   const roomName = JSON.parse(document.getElementById('room-name').textContent);
   const chatLog = document.querySelector('#chat-log')
 
+  const theElement = document.getElementById('chat-log');
+  const scrollToBottom = (node) => {
+	  node.scrollTop = node.scrollHeight;
+  }
+
 
   if (chatLog.childNodes.length <= 1) {
 
@@ -83,9 +88,11 @@
     } else {
       messageElement.innerHTML = `<span style="color:black;">${data.username}:</span> ${data.message}`
       messageElement.classList.add('message', 'receiver')
+      scrollToBottom(theElement);
     }
 
     chatLog.appendChild(messageElement)
+    scrollToBottom(theElement);
 
     if (document.querySelector('#emptyText')) {
       document.querySelector('#emptyText').remove()
@@ -110,11 +117,9 @@
       'username': user_username,
     }));
     messageInputDom.value = '';
+    
   };
-    const theElement = document.getElementById('chat-log');
-    const scrollToBottom = (node) => {
-	  node.scrollTop = node.scrollHeight;
-    }
-    scrollToBottom(theElement);
+  scrollToBottom(theElement);
+
 </script>
 {% endblock %}
