@@ -28,11 +28,12 @@ body {
 .icon-bar a p{
 	font-size: 1rem;
 }
-   
-.active {
+.icon-bar a:active {
 	background-color: rgb(114, 42, 182);
 }
-
+.icon-bar .is-active {
+	background-color: rgb(114, 42, 182);
+}
 .app-box {
 	width: 100vw;
 	margin: 50px auto;
